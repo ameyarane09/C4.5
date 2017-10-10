@@ -1,0 +1,211 @@
+package myc45;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+
+public class UserScreen extends JFrame implements ActionListener, ItemListener
+{
+	private static final long serialVersionUID = 1L;
+	
+	JFrame f1 = new JFrame();
+	
+	JLabel dest = new JLabel("Destination");
+	JLabel carr = new JLabel("Carrier");
+	JLabel dist = new JLabel("Distance");
+	JLabel da = new JLabel("Day");
+	
+	JButton submit = new JButton("Submit");
+	
+	JTextField distance = new JTextField();
+	
+	JComboBox<String> destination = new JComboBox<String>();
+	JComboBox<String> origin = new JComboBox<String>();
+	JComboBox<String> day = new JComboBox<String>();
+	JComboBox<String> carrier = new JComboBox<String>();
+	
+	public void firstScreen()
+	{
+		day.addItem("01");
+		day.addItem("02");
+		day.addItem("03");
+		day.addItem("04");
+		day.addItem("05");
+		day.addItem("06");
+		day.addItem("07");
+		day.addItem("08");
+		day.addItem("09");
+		day.addItem("10");
+		day.addItem("11");
+		day.addItem("12");
+		day.addItem("13");
+		day.addItem("14");
+		day.addItem("15");
+		day.addItem("16");
+		day.addItem("17");
+		day.addItem("18");
+		day.addItem("19");
+		day.addItem("20");
+		day.addItem("21");
+		day.addItem("22");
+		day.addItem("23");
+		day.addItem("24");
+		day.addItem("25");
+		day.addItem("26");
+		day.addItem("27");
+		day.addItem("28");
+		day.addItem("29");
+		day.addItem("30");
+		day.addItem("31");
+		destination.addItem("JFK");
+		destination.addItem("LGA");
+		destination.addItem("EWR");
+		carrier.addItem("OH");
+		carrier.addItem("DH");
+		carrier.addItem("DL");
+		carrier.addItem("MQ");
+		carrier.addItem("UA");
+		carrier.addItem("US");
+		carrier.addItem("RU");
+		carrier.addItem("CO");
+		
+		da.setBounds(50, 200, 200, 30);
+		day.setBounds(200, 200, 60, 30);
+		distance.setBounds(200, 50, 60, 30);
+		dist.setBounds(50, 50, 200, 30);
+		dest.setBounds(50, 100, 200, 30);
+		destination.setBounds(200, 100, 60, 30);
+		submit.setBounds(200, 300, 100, 30);
+		carrier.setBounds(200, 150, 60, 30);
+		carr.setBounds(50, 150, 200, 30);
+		
+		f1.add(distance);
+		f1.add(da);
+		f1.add(day);
+		f1.add(dist);
+		f1.add(dest);
+		f1.add(destination);
+		f1.add(carr);
+		f1.add(carrier);
+		f1.add(submit);
+		
+		submit.addActionListener(this);
+		
+		f1.setLayout(null);
+        f1.setVisible(true);
+        f1.setSize(500,500);
+        f1.setTitle("Vivamus More - Ameya Sachin Rane");
+        
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) ((dimension.getWidth() - f1.getWidth()) / 2);
+        int y = (int) ((dimension.getHeight() - f1.getHeight()) / 2);
+        f1.setLocation(x, y);
+	}
+	
+	public double getPerc(String s)
+	{
+		int l = Attribute.list.indexOf(s);
+		l++;
+		return (double)Attribute.list.get(l);
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e)
+	{
+		if(e.getSource()==submit)
+		{
+			double nDistance = 0;
+			double nDestination = 0;
+			double nCarrier = 0;
+			double nDay = 0;
+			
+			String d = destination.getSelectedItem().toString();
+			String c = carrier.getSelectedItem().toString();
+			double di = Double.parseDouble(distance.getText());
+			String dday = day.getSelectedItem().toString();
+			if(di<169)
+			{
+				nDistance = getPerc("169");
+			}
+			else if(di>=169 && di<184)
+			{
+				nDistance = getPerc("184");
+			}
+			else if(di>=184 && di<199)
+			{
+				nDistance = getPerc("199");
+			}
+			else if(di>=199 && di<213)
+			{
+				nDistance = getPerc("213");
+			}
+			else if(di>=213 && di<214)
+			{
+				nDistance = getPerc("214");
+			}
+			else if(di>=214 && di<228)
+			{
+				nDistance = getPerc("228");
+			}
+			else if(di>=228 && di<229)
+			{
+				nDistance = getPerc("229");
+			}
+			else
+			{
+				nDistance = getPerc("229");
+			}
+			if(Attribute.list.contains(d)&&Attribute.list.contains(c)&&Attribute.list.contains(dday+"-01-04"))
+			{
+				/*double d = getPerc(s);
+				System.out.println(d);*/
+				nDestination = getPerc(d);
+				nCarrier = getPerc(c);
+				nDay = getPerc(dday+"-01-04");
+				/*System.out.println("Dest: "+n1);
+				System.out.println("Carr: "+n2);*/
+			}
+			double tot = nDestination+nCarrier+nDistance+nDay;
+			tot/=4;
+			System.out.println(tot);
+		}
+	}
+	
+	public static void main(String args[])throws IOException
+	{
+		UserScreen ob = new UserScreen();
+		ob.firstScreen();
+		MyC45 m = new MyC45();
+		m.mymain();
+		System.out.println(Attribute.list);
+	}
+}

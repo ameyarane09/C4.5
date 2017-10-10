@@ -1,0 +1,676 @@
+package myc45;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDesktopPane;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JTextField;
+
+import com.sl.GmapDistance;
+
+public class UserScreen extends JFrame implements ActionListener, ItemListener
+{
+	private static final long serialVersionUID = 1L;
+	static final String JDBC_Driver = "com.mysql.jdbc.Driver";
+	static final String DB_URL = "jdbc:mysql://localhost/flight";
+	static final String u = "root";
+	static final String p = "root";
+	
+	JFrame f1 = new JFrame();
+	JFrame loadFrame = new JFrame();
+	
+	JLabel dest = new JLabel("Destination");
+	JLabel carr = new JLabel("Carrier");
+	JLabel loc = new JLabel("Location");
+	JLabel da = new JLabel("Date");
+	JLabel ori = new JLabel("Origin");
+	JLabel dow = new JLabel("Day of Week");
+	JLabel time = new JLabel("Departure Time");
+	JLabel hLabel = new JLabel("HH");
+	JLabel mLabel = new JLabel("MM");
+	JLabel background = new JLabel(new ImageIcon("C:\\Users\\User\\workspace\\C4.5\\images\\Vivamus Mora logo.jpg"));
+	
+	JButton submit = new JButton("Submit");
+	JButton cancel = new JButton("Cancel");
+	
+	JTextField location = new JTextField();
+	
+	JComboBox<String> destination = new JComboBox<String>();
+	//JComboBox<String> dayOfWeek = new JComboBox<String>();
+	JComboBox<String> origin = new JComboBox<String>();
+	JComboBox<String> day = new JComboBox<String>();
+	JComboBox<String> month = new JComboBox<String>();
+	JComboBox<String> year = new JComboBox<String>();
+	JComboBox<String> carrier = new JComboBox<String>();
+	JComboBox<String> hh = new JComboBox<String>();
+	JComboBox<String> mm = new JComboBox<String>();
+		
+	JPanel transparentPanel = new JPanel();
+	JDesktopPane dp = new JDesktopPane();
+	JProgressBar jb;    
+    int i=0,num=0; 
+	
+    public void iterate() throws InterruptedException{    
+    	while(i<=2000){    
+    	  jb.setValue(i);    
+    	  i=i+200;    
+    	  try{Thread.sleep(150);}catch(Exception e){}    
+    	}    
+    	loadFrame.dispose();
+    	firstScreen();
+    	}    
+	
+	public void loadScreen() throws InterruptedException
+	{
+		/*loadFrame.setLayout(new BorderLayout());
+		background.setLayout(new FlowLayout());
+		loadFrame.add(background);*/
+		
+		jb=new JProgressBar(0,2000);    
+		jb.setBounds(100,350,425,15);         
+		jb.setValue(0);    
+		jb.setStringPainted(true); 
+		//loadFrame.add(jb);
+		
+		background.setBounds(0, -50, 650, 500);
+		transparentPanel.setOpaque(false);
+	    transparentPanel.setBounds(0,0,650,500);
+	    dp.add(background,new Integer(50));
+	    dp.add(transparentPanel,new Integer(350));
+	    dp.add(jb,new Integer(500));
+		loadFrame.setLayout(null);
+	    loadFrame.setLayeredPane(dp);
+	    
+		loadFrame.setLayout(null);
+		loadFrame.setVisible(true);
+		loadFrame.setSize(650,500);
+		loadFrame.setTitle("Vivamus Mora - Ameya Sachin Rane");
+        
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) ((dimension.getWidth() - loadFrame.getWidth()) / 2);
+        int y = (int) ((dimension.getHeight() - loadFrame.getHeight()) / 2);
+        loadFrame.setLocation(x, y);
+        
+        iterate();
+	}
+	
+	public void firstScreen() throws InterruptedException
+	{
+		
+		/*dayOfWeek.addItem("Sunday");
+		dayOfWeek.addItem("Monday");
+		dayOfWeek.addItem("Tueday");
+		dayOfWeek.addItem("Wednesday");
+		dayOfWeek.addItem("Thursday");
+		dayOfWeek.addItem("Friday");
+		dayOfWeek.addItem("Saturday");*/
+		origin.addItem("Baltimore, Washington");//BWI
+		origin.addItem("Ronald Reagan Aiport");//DCA
+		origin.addItem("Dulles International Airport");//IAD
+		day.addItem("01");
+		day.addItem("02");
+		day.addItem("03");
+		day.addItem("04");
+		day.addItem("05");
+		day.addItem("06");
+		day.addItem("07");
+		day.addItem("08");
+		day.addItem("09");
+		day.addItem("10");
+		day.addItem("11");
+		day.addItem("12");
+		day.addItem("13");
+		day.addItem("14");
+		day.addItem("15");
+		day.addItem("16");
+		day.addItem("17");
+		day.addItem("18");
+		day.addItem("19");
+		day.addItem("20");
+		day.addItem("21");
+		day.addItem("22");
+		day.addItem("23");
+		day.addItem("24");
+		day.addItem("25");
+		day.addItem("26");
+		day.addItem("27");
+		day.addItem("28");
+		day.addItem("29");
+		day.addItem("30");
+		day.addItem("31");
+		destination.addItem("John F. Kennedy Aiport");//JFK
+		destination.addItem("LaGuardia Airport");//LGA
+		destination.addItem("Newark Liberty Airport");//EWR
+
+		carrier.addItem("Ameristar Air Cargo");//RU
+		carrier.addItem("Branson Air Express");//DH
+		carrier.addItem("Delta Air Lines");//DL
+		carrier.addItem("Envoy Air");//MQ
+		carrier.addItem("PSA Airlines");//OH
+		carrier.addItem("United Airlines");//UA
+		carrier.addItem("USA Jet Airlines");//US
+		carrier.addItem("Sun Country Airlines");//CO
+		for(int i=0;i<24;i++)
+		{
+			if(i<10)
+			{
+				hh.addItem("0"+i);
+			}
+			else
+			{
+				hh.addItem(""+i);
+			}
+		}
+		for(int i=0;i<60;i=i+5)
+		{
+			if(i<10)
+			{
+				mm.addItem("0"+i);
+			}
+			else
+			{
+				mm.addItem(""+i);
+			}
+		}
+		for(int i=1;i<=12;i++) 
+		{
+			if(i<10)
+			{
+				month.addItem("0"+i);
+			}
+			else
+			{
+				month.addItem(""+i);
+			}
+		}
+		for(int i=2017;i>=2000;i--) 
+		{
+			year.addItem(""+i);
+		}
+		/*origin.setBounds(200, 150, 60, 30);
+		ori.setBounds(50, 150, 200, 30);
+		dest.setBounds(50, 100, 200, 30);
+		destination.setBounds(200, 100, 60, 30);
+		//dayOfWeek.setBounds(200, 300, 100, 30);
+		dow.setBounds(50, 300, 200, 30);
+		da.setBounds(50, 200, 200, 30);
+		day.setBounds(200, 200, 60, 30);
+		location.setBounds(200, 50, 100, 30);
+		loc.setBounds(50, 50, 200, 30);
+		submit.setBounds(200, 350, 100, 30);
+		carrier.setBounds(200, 250, 60, 30);
+		carr.setBounds(50, 250, 200, 30);
+		hh.setBounds(450, 50, 60, 30);
+		mm.setBounds(520, 50, 60, 30);
+		time.setBounds(350, 50, 100, 30);*/
+		
+		/*ori.setBounds(50, 150, 200, 30);
+		origin.setBounds(100, 200, 160, 30);
+		dest.setBounds(320, 150, 200, 30);
+		destination.setBounds(430, 150, 105, 30);
+		loc.setBounds(600, 150, 200, 30);
+		location.setBounds(660, 150, 100, 30);        //2*3
+		
+		da.setBounds(50, 250, 200, 30);
+		day.setBounds(100, 250, 45, 30);
+		month.setBounds(150, 250, 45, 30);
+		year.setBounds(200, 250, 60, 30);
+		time.setBounds(320, 250, 100, 30);
+		hh.setBounds(430, 250, 45, 30);
+		mm.setBounds(480, 250, 45, 30);
+		carr.setBounds(600, 250, 200, 30);
+		carrier.setBounds(660, 250, 100, 30);*/
+		
+		ori.setBounds(50, 150, 200, 30);
+		origin.setBounds(125, 150, 160, 30);
+		da.setBounds(50, 200, 200, 30);
+		day.setBounds(125, 200, 45, 30);
+		month.setBounds(175, 200, 45, 30);
+		year.setBounds(225, 200, 60, 30);
+		loc.setBounds(50, 250, 200, 30);
+		location.setBounds(125, 250, 160, 30);    
+		location.setFont(new Font("Times New Roman", Font.BOLD, 14));   //3*2
+		
+		dest.setBounds(375, 150, 200, 30);
+		destination.setBounds(500, 150, 160, 30);
+		time.setBounds(375, 200, 100, 30);
+		hh.setBounds(500, 200, 45, 30);
+		mm.setBounds(550, 200, 45, 30);
+		carr.setBounds(375, 250, 200, 30);
+		carrier.setBounds(500, 250, 160, 30);
+		
+		submit.setBounds(580, 325, 80, 30);
+		
+		submit.setBackground(new Color(59, 89, 182));
+		submit.setForeground(Color.WHITE);
+		submit.setFocusPainted(false);
+		submit.setFont(new Font("Tahoma", Font.BOLD, 12));
+		
+
+		cancel.setBounds(490, 325, 80, 30);
+		
+		cancel.setBackground(new Color(59, 89, 182));
+		cancel.setForeground(Color.WHITE);
+		cancel.setFocusPainted(false);
+		cancel.setFont(new Font("Tahoma", Font.BOLD, 12));
+		
+		//dayOfWeek.setBounds(200, 300, 100, 30);
+		//dow.setBounds(50, 300, 200, 30);
+		
+		//f1.add(dayOfWeek);
+		
+		//Fonts Section
+		ori.setFont(new Font("Tahoma", Font.BOLD, 12));//Academy Engraved LET
+		da.setFont(new Font("Tahoma", Font.BOLD, 12));
+		loc.setFont(new Font("Tahoma", Font.BOLD, 12));
+		dest.setFont(new Font("Tahoma", Font.BOLD, 12));
+		time.setFont(new Font("Tahoma", Font.BOLD, 12));
+		carr.setFont(new Font("Tahoma", Font.BOLD, 12));
+		carrier.setFont(new Font("Rockwell", Font.PLAIN, 12));
+		origin.setFont(new Font("Rockwell", Font.PLAIN, 12));
+		destination.setFont(new Font("Rockwell", Font.PLAIN, 12));
+		day.setFont(new Font("Rockwell", Font.PLAIN, 12));
+		month.setFont(new Font("Rockwell", Font.PLAIN, 12));
+		year.setFont(new Font("Rockwell", Font.PLAIN, 12));
+		hh.setFont(new Font("Rockwell", Font.PLAIN, 12));
+		mm.setFont(new Font("Rockwell", Font.PLAIN, 12));
+		
+		transparentPanel = new JPanel();
+		dp = new JDesktopPane();
+		background.setBounds(25, -50, 650, 200);
+		transparentPanel.setOpaque(false);
+	    transparentPanel.setBounds(0,0,650,200);
+	    //dp.add(background,new Integer(50));
+	    dp.add(transparentPanel,new Integer(350));
+	    dp.add(background,new Integer(50));
+	    dp.add(dow,new Integer(50));
+	    dp.add(location,new Integer(50));
+	    dp.add(ori,new Integer(50));
+	    dp.add(origin,new Integer(50));
+	    dp.add(da,new Integer(50));
+	    dp.add(day,new Integer(50));
+	    dp.add(month,new Integer(50));
+	    dp.add(year,new Integer(50));
+	    dp.add(loc,new Integer(50));
+	    dp.add(dest,new Integer(50));
+	    dp.add(destination,new Integer(50));
+	    dp.add(carr,new Integer(50));
+	    dp.add(carrier,new Integer(50));
+	    dp.add(submit,new Integer(50));
+	    dp.add(cancel,new Integer(50));
+	    dp.add(hh,new Integer(50));
+	    dp.add(mm,new Integer(50));
+	    dp.add(time,new Integer(50));
+	    f1.setLayeredPane(dp);
+		
+		/*f1.add(dow);
+		f1.add(location);
+		f1.add(ori);
+		f1.add(origin);
+		f1.add(da);
+		f1.add(day);
+		f1.add(month);
+		f1.add(year);
+		f1.add(loc);
+		f1.add(dest);
+		f1.add(destination);
+		f1.add(carr);
+		f1.add(carrier);
+		f1.add(submit);
+		f1.add(hh);
+		f1.add(mm);
+		f1.add(time);*/
+		
+		submit.addActionListener(this);
+		cancel.addActionListener(this);
+		
+		f1.setLayout(null);
+        f1.setVisible(true);
+        f1.setSize(745,430);
+        f1.setTitle("Vivamus Mora - Ameya Sachin Rane");
+        
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) ((dimension.getWidth() - f1.getWidth()) / 2);
+        int y = (int) ((dimension.getHeight() - f1.getHeight()) / 2);
+        f1.setLocation(x, y);
+	}
+	
+	public double getPerc(String s)
+	{
+		int l = Attribute.list.indexOf(s);
+		l++;
+		return (double)Attribute.list.get(l);
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e)
+	{
+		if(e.getSource()==submit)
+		{
+			Connection conn = null;
+			Statement stmt = null;
+			ResultSet rs = null;
+			
+			double nDistance = 0;
+			double nDestination = 0;
+			double nCarrier = 0;
+			double nDay = 0;
+			double nOrigin = 0;
+			double nDayOfWeek = 0;
+			
+			String l = location.getText().toString();
+			if(l.equals(null)||l.equals(""))
+			{
+				location.setBackground(Color.RED);
+				location.setForeground(Color.WHITE);
+				JOptionPane.showMessageDialog(this,"Please specify your current location", "Location Error",JOptionPane.ERROR_MESSAGE);
+			}
+			else {
+			String htime = hh.getSelectedItem().toString();
+			String mtime = mm.getSelectedItem().toString();
+			String d = destination.getSelectedItem().toString();
+			String c = carrier.getSelectedItem().toString();
+			//double di = 0;//Double.parseDouble(distance.getText());
+			//String dday = day.getSelectedItem().toString();
+			String o = origin.getSelectedItem().toString();
+			//String ddow = dayOfWeek.getSelectedItem().toString();
+			String selectedday = day.getSelectedItem().toString();
+			String selectedmonth = month.getSelectedItem().toString();
+			String selectedyear = year.getSelectedItem().toString();
+			String input_date = selectedday+"/"+selectedmonth+"/"+selectedyear;
+			SimpleDateFormat format1=new SimpleDateFormat("dd/MM/yyyy");
+			String ddow="";
+			try 
+			{
+				Date dt1 = format1.parse(input_date);
+				DateFormat format2=new SimpleDateFormat("EEEE"); 
+				ddow=format2.format(dt1);
+				System.out.println("Day of Week: "+ddow);
+			} 
+			catch (ParseException e2)
+			{
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+			if(o.equals("Baltimore, Washington"))
+				o = "BWI";
+			else if(o.equals("Ronald Reagan Aiport"))
+				o = "DCA";
+			else if(o.equals("Dulles International Airport"))
+				o = "IAD";
+			if(d.equals("John F. Kennedy Aiport"))
+				d = "JFK";
+			else if(d.equals("LaGuardia Airport"))
+				d = "LGA";
+			else if(d.equals("Newark Liberty Airport"))
+				d = "EWR";
+			if(c.equals("PSA Airlines"))
+				c = "OH";
+			else if(c.equals("Branson Air Express"))
+				c = "DH";
+			else if(c.equals("Delta Air Lines"))
+				c = "DL";
+			else if(c.equals("Envoy Air"))
+				c = "MQ";
+			else if(c.equals("United Airlines"))
+				c = "UA";
+			else if(c.equals("USA Jet Airlines"))
+				c = "US";
+			else if(c.equals("Ameristar Air Cargo"))
+				c = "RU";
+			else if(c.equals("Sun Country Airlines"))
+				c = "CO";
+			String timefromlocation="";
+			String timeoftravel="";
+			if(ddow.equalsIgnoreCase("Sunday"))
+			{
+				nDayOfWeek = getPerc("1");
+			}
+			else if(ddow.equalsIgnoreCase("Monday"))
+			{
+				nDayOfWeek = getPerc("2");
+			}
+			else if(ddow.equalsIgnoreCase("Tuesday"))
+			{
+				nDayOfWeek = getPerc("3");
+			}
+			else if(ddow.equalsIgnoreCase("Wednesday"))
+			{
+				nDayOfWeek = getPerc("4");
+			}
+			else if(ddow.equalsIgnoreCase("Thursday"))
+			{
+				nDayOfWeek = getPerc("5");
+			}
+			else if(ddow.equalsIgnoreCase("Friday"))
+			{
+				nDayOfWeek = getPerc("6");
+			}
+			else
+			{
+				nDayOfWeek = getPerc("7");
+			}
+			try
+			{
+				Class.forName("com.mysql.jdbc.Driver");
+	            conn = DriverManager.getConnection(DB_URL,u,p);
+	            String q = "select dist from distance where origin = '"+o+"' and destination = '"+d+"';";
+	            //System.out.println(q);
+	            stmt = conn.createStatement();
+	            rs = stmt.executeQuery(q);
+	            while(rs.next())
+	            {
+	            	nDistance = Double.parseDouble(rs.getString("dist"));
+	            	//System.out.println(nDistance);
+	            }
+			}
+			catch(Exception exc)
+			{
+				exc.printStackTrace();
+				System.out.println("Error in e.getsource==submit");
+			}
+			if(Attribute.list.contains(d)&&Attribute.list.contains(c)&&Attribute.list.contains(selectedday+"-01-04")&&Attribute.list.contains(o))
+			{
+				/*double d = getPerc(s);
+				System.out.println(d);*/
+				nDestination = getPerc(d);
+				nCarrier = getPerc(c);
+				nDay = getPerc(selectedday+"-01-04");
+				nOrigin = getPerc(o);
+				/*System.out.println("Dest: "+n1);
+				System.out.println("Carr: "+n2);*/
+			}
+			
+			try {
+				GmapDistance.mainGmapDistance(l,o);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			//System.out.println(GmapDistance.str);//Time from users location to the origin airport'
+			timefromlocation = GmapDistance.str;
+			
+			try {
+				GmapDistance.mainGmapDistance(o,d);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			//System.out.println(GmapDistance.str);//Time from users location to the origin airport
+			timeoftravel = GmapDistance.str;
+			
+			System.out.println("Time from location to origin airport: "+timefromlocation);
+			timefromlocation = " "+timefromlocation;
+			//timefromlocation = timefromlocation.trim();
+			int len = timefromlocation.length();
+			String pMin="",pHour="";
+			for(int i=0;i<len;i++)
+			{
+				char ch = timefromlocation.charAt(i);
+				if(ch=='h'||ch=='H')
+				{
+					if(!Character.isWhitespace(timefromlocation.charAt(i-3)))
+					pHour = ""+timefromlocation.charAt(i-3)+timefromlocation.charAt(i-2);
+					else
+					{
+						pHour = ""+timefromlocation.charAt(i-2);
+					}
+				}
+				if(ch=='m'||ch=='M')
+				{
+					if(!Character.isWhitespace(timefromlocation.charAt(i-3)))
+					pMin = ""+timefromlocation.charAt(i-3)+timefromlocation.charAt(i-2);
+					else
+					{
+						pMin = ""+timefromlocation.charAt(i-2);
+					}
+				}
+			}
+			//System.out.println(pHour);
+			//System.out.println(pMin);
+			
+			/*Do the time calculation here!*/
+			
+			System.out.println("Time from origin airport to destination airport: "+timeoftravel.trim());
+			
+			//My calculations - 22.04.17
+			/*String strHour = timefromlocation.substring(0,timefromlocation.indexOf("hours"));
+			strHour = strHour.trim();
+			//System.out.println(str);
+			String strMin = timefromlocation.substring((timefromlocation.indexOf("hours")+5),timefromlocation.indexOf("mins"));
+			strMin = strMin.trim();*/
+			//System.out.println(strMin);
+			System.out.println("Flight departure time: "+htime+":"+mtime);
+			
+			
+			String strHour="",strMin="";
+			if(timefromlocation.contains("hours"))
+			{
+				strHour = timefromlocation.substring(0,timefromlocation.indexOf("hours"));
+				strHour = strHour.trim();
+				//System.out.println(str);
+				strMin = timefromlocation.substring((timefromlocation.indexOf("hours")+5),timefromlocation.indexOf("mins"));
+				strMin = strMin.trim();
+			}
+			else if(timefromlocation.contains("hour"))
+			{
+				strHour = timefromlocation.substring(0,timefromlocation.indexOf("hour"));
+				strHour = strHour.trim();
+				//System.out.println(str);
+				strMin = timefromlocation.substring((timefromlocation.indexOf("hour")+4),timefromlocation.indexOf("mins"));
+				strMin = strMin.trim();
+			}
+			else
+			{
+				strHour = "0";
+				strMin = timefromlocation.substring(0, timefromlocation.indexOf("m"));
+				strMin = strMin.trim();
+			}
+			
+			String time2 = ""+selectedyear+"-"+selectedmonth+"-"+selectedday+" "+htime+":"+mtime;
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+			Date d2 = null;
+			try {
+				d2 = format.parse(time2);
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			/*long diff = d2.getTime() - d1.getTime();
+			long diffMinutes = diff / (60 * 1000) % 60;
+			long diffHours = diff / (60 * 60 * 1000) % 24;
+			System.out.println("Optimum Departure time from location: "+(diffHours+":"+diffMinutes));*/
+			java.util.Calendar cal = GregorianCalendar.getInstance();
+			cal.setTime(d2);
+			int h1 = Integer.parseInt(strHour);
+			h1 = (-1)*h1;
+			int m1 = Integer.parseInt(strMin);
+			m1 = (-1)*m1;
+			cal.add(GregorianCalendar.HOUR_OF_DAY, h1);
+			//cal.add(GregorianCalendar.HOUR_OF_DAY, -2);
+			cal.add(GregorianCalendar.MINUTE, m1);
+			//System.out.println(format.format(cal.getTime()));
+			
+			//Working on delay time
+			if(timeoftravel.contains("hours"))
+			{
+				strHour = timeoftravel.substring(0,timeoftravel.indexOf("hours"));
+				strHour = strHour.trim();
+				//System.out.println(str);
+				strMin = timeoftravel.substring((timeoftravel.indexOf("hours")+5),timeoftravel.indexOf("mins"));
+				strMin = strMin.trim();
+			}
+			else
+			{
+				strHour = "0";
+				strMin = timeoftravel.substring(0, timeoftravel.indexOf("m"));
+				strMin = strMin.trim();
+			}
+			int timeHour = Integer.parseInt(strHour);
+			int timeMin = Integer.parseInt(strMin);
+			int totalTime = (timeHour*60)+timeMin;
+			
+			double tot = nDestination+nCarrier+nDistance+nDay+nOrigin+nDayOfWeek;
+			tot/=6;
+			//System.out.println(Math.round(tot));
+			int delayTimePerc = (int) (Math.round(tot));
+			int delayTime = ((100-delayTimePerc)*totalTime)/100;
+			strHour = Integer.toString(delayTime/60);
+			strMin = Integer.toString(delayTime%60);
+			h1 = Integer.parseInt(strHour);
+			h1 = (-1)*h1;
+			m1 = Integer.parseInt(strMin);
+			m1 = (-1)*m1;
+			cal.add(GregorianCalendar.HOUR_OF_DAY, h1);
+			cal.add(GregorianCalendar.MINUTE, m1);
+			f1.dispose();
+			JOptionPane.showMessageDialog(this,""+format.format(cal.getTime()), "Optimum Departure Time",JOptionPane.INFORMATION_MESSAGE);
+			}
+		}
+		else if(e.getSource()==cancel)
+		{
+			loadFrame.dispose();
+			f1.dispose();
+		}
+	}
+	
+	public static void main(String args[])throws IOException, InterruptedException
+	{
+		UserScreen ob = new UserScreen();
+		ob.loadScreen();
+		//ob.firstScreen();
+		MyC45 m = new MyC45();
+		m.mymain();
+		//System.out.println(Attribute.list);
+	}
+}

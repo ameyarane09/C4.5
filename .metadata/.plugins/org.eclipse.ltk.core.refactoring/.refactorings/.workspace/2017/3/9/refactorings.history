@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Delete resource &apos;rapidminer-extension-template-master&apos;" deleteContents="true" description="Delete resource &apos;rapidminer-extension-template-master&apos;" element1="/rapidminer-extension-template-master" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1488469537982"/>
+</session>

@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<tree>
+<declarations>
+<attributeDecl name="name" type="String" />
+<attributeDecl name="weight" type="Real" />
+</declarations>
+<leaf>
+<attribute name="name" value="root" />
+<attribute name="weight" value="1" />
+</leaf>
+</tree>
